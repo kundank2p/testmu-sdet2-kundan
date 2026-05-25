@@ -1,0 +1,27 @@
+{
+  "name": "testmu-sdet2-kundan",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kundank2p/testmu-sdet2-kundan.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/kundank2p/testmu-sdet2-kundan/issues"
+  },
+  "homepage": "https://github.com/kundank2p/testmu-sdet2-kundan#readme",
+  "devDependencies": {
+    "@playwright/test": "^1.60.0",
+    "allure-playwright": "^3.9.0",
+    "typescript": "^6.0.3",
+    "zod": "^4.4.3"
+  }
+}
