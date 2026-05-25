@@ -135,16 +135,50 @@ This document outlines the comprehensive test framework built for the Restful Bo
 
 **Purpose**: Verify end-to-end workflows combining UI and API layers.
 
-#### 3.1 API-to-UI Integration (`booking.integration.spec.ts`)
-- ✅ **Create room via API, assert it renders in UI**:
-  1. POST /api/room with test payload
-  2. Verify response success
-  3. Navigate to admin dashboard (UI, using auth session)
-  4. Assert room appears in room list
-  5. Clear test data (DELETE)
+#### 3.1 E2E Room Lifecycle (`e2e-room-lifecycle.spec.ts`)
+
+**Test 1: Create Room via API, Verify in UI**
+- ✅ **API → UI workflow**:
+  1. POST /api/room with unique room name
+  2. Extract room ID from response
+  3. Login to admin dashboard (UI)
+  4. Verify room appears in room list by name
+  5. Assert room is visible using correct selectors
 - **Coverage**: ~1 test
-- **Fixture**: `roomApi` (API), `page` + `DashboardPage` (UI)
-- **Data**: Unique room name generated at runtime
+- **Fixtures**: `roomApi` (API), `page` + selectors (UI)
+- **Data**: Runtime-generated unique room name (`Integration-{timestamp}`)
+
+**Test 2: Data Consistency Across Layers**
+- ✅ **API → UI data validation**:
+  1. Fetch rooms list via API (GET /api/rooms)
+  2. Extract first room details
+  3. Navigate to dashboard UI
+  4. Verify room count matches between API and UI
+  5. Assert room data structures are consistent
+- **Coverage**: ~1 test
+- **Purpose**: Detect sync failures between backend and frontend
+
+**Test 3: Error Handling Integration**
+- ✅ **Error propagation verification**:
+  1. Attempt invalid room creation via API (empty name, invalid price)
+  2. Verify API returns 4xx error status
+  3. Confirm error response has proper structure
+  4. Assert no partial data persists
+- **Coverage**: ~1 test
+- **Purpose**: Ensure invalid data doesn't corrupt system state
+
+**Test 4: Performance SLA Validation**
+- ✅ **Cross-layer performance**:
+  1. Measure CREATE response time (target: <3000ms)
+  2. Measure LIST response time (target: <2000ms)
+  3. Verify both operations meet SLA
+  4. Log performance metrics for trend analysis
+- **Coverage**: ~1 test
+- **Purpose**: Catch performance regressions early
+
+**Total Integration Test Coverage**: ~4 tests
+**Execution Strategy**: Runs after API tests (dependency: data must exist) and UI tests (session must be established)
+**Cross-Browser**: Yes (inherits browser selection from Chromium, Firefox projects in config)
 
 ---
 
