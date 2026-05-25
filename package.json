@@ -1,7 +1,7 @@
 {
   "name": "testmu-sdet2-kundan",
   "version": "1.0.0",
-  "description": "",
+  "description": "> Playwright + TypeScript test framework built for the TestMu AI SDET-2 assessment.",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -13,15 +13,30 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "type": "commonjs",
+  "type": "module",
   "bugs": {
     "url": "https://github.com/kundank2p/testmu-sdet2-kundan/issues"
   },
   "homepage": "https://github.com/kundank2p/testmu-sdet2-kundan#readme",
   "devDependencies": {
+    "@faker-js/faker": "^10.4.0",
     "@playwright/test": "^1.60.0",
     "allure-playwright": "^3.9.0",
+    "ts-node": "^10.9.2",
     "typescript": "^6.0.3",
     "zod": "^4.4.3"
+  },
+  "directories": {
+    "test": "tests"
+  },
+  "dependencies": {
+    "allure-js-commons": "^3.9.0",
+    "charenc": "^0.0.2",
+    "crypt": "^0.0.2",
+    "dotenv": "^17.4.2",
+    "is-buffer": "^1.1.6",
+    "md5": "^2.3.0",
+    "playwright": "^1.60.0",
+    "playwright-core": "^1.60.0"
   }
 }

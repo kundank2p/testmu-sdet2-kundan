@@ -1,0 +1,86 @@
+[
+  {
+    "scenario": "Valid suite room with all features",
+    "payload": {
+      "roomName": "Suite-Standard",
+      "type": "Suite",
+      "accessible": true,
+      "image": "https://images.pexels.com/photos/271624/pexels-photo-271624.jpeg",
+      "description": "Premium suite with ocean view",
+      "features": ["WiFi", "TV", "Safe", "AC", "Balcony"],
+      "roomPrice": "350"
+    },
+    "expectedStatus": 200,
+    "isValid": true
+  },
+  {
+    "scenario": "Valid single room",
+    "payload": {
+      "roomName": "Single-Room",
+      "type": "Single",
+      "accessible": false,
+      "image": "https://images.pexels.com/photos/271624/pexels-photo-271624.jpeg",
+      "description": "Compact single room",
+      "features": ["WiFi"],
+      "roomPrice": "100"
+    },
+    "expectedStatus": 200,
+    "isValid": true
+  },
+  {
+    "scenario": "Valid double room",
+    "payload": {
+      "roomName": "Double-Room",
+      "type": "Double",
+      "accessible": true,
+      "image": "https://images.pexels.com/photos/271624/pexels-photo-271624.jpeg",
+      "description": "Comfortable double bed room",
+      "features": ["WiFi", "TV", "AC"],
+      "roomPrice": "200"
+    },
+    "expectedStatus": 200,
+    "isValid": true
+  },
+  {
+    "scenario": "Valid twin room",
+    "payload": {
+      "roomName": "Twin-Room",
+      "type": "Twin",
+      "accessible": true,
+      "image": "https://images.pexels.com/photos/271624/pexels-photo-271624.jpeg",
+      "description": "Twin beds room",
+      "features": ["WiFi", "TV"],
+      "roomPrice": "180"
+    },
+    "expectedStatus": 200,
+    "isValid": true
+  },
+  {
+    "scenario": "Valid room with minimum features",
+    "payload": {
+      "roomName": "Basic-Room",
+      "type": "Single",
+      "accessible": false,
+      "image": "https://images.pexels.com/photos/271624/pexels-photo-271624.jpeg",
+      "description": "Basic room",
+      "features": ["WiFi"],
+      "roomPrice": "75"
+    },
+    "expectedStatus": 200,
+    "isValid": true
+  },
+  {
+    "scenario": "Valid room with high price",
+    "payload": {
+      "roomName": "Luxury-Suite",
+      "type": "Suite",
+      "accessible": true,
+      "image": "https://images.pexels.com/photos/271624/pexels-photo-271624.jpeg",
+      "description": "Luxury suite with premium amenities",
+      "features": ["WiFi", "TV", "Jacuzzi", "Safe", "Balcony", "Minibar"],
+      "roomPrice": "999"
+    },
+    "expectedStatus": 200,
+    "isValid": true
+  }
+]

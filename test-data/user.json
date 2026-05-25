@@ -1,0 +1,17 @@
+[
+  {
+    "scenario": "Valid admin credentials",
+    "type": "valid",
+    "isValid": true
+  },
+  {
+    "scenario": "Invalid username",
+    "type": "invalidUsername",
+    "isValid": false
+  },
+  {
+    "scenario": "Invalid password",
+    "type": "invalidPassword",
+    "isValid": false
+  }
+]

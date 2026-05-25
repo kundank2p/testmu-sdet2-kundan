@@ -1,0 +1,82 @@
+[
+  {
+    "scenario": "Missing room name",
+    "payload": {
+      "type": "Suite",
+      "accessible": true,
+      "image": "https://images.pexels.com/photos/271624/pexels-photo-271624.jpeg",
+      "description": "Missing name",
+      "features": ["WiFi"],
+      "roomPrice": "300"
+    },
+    "expectedStatus": 400
+  },
+  {
+    "scenario": "Missing room type",
+    "payload": {
+      "roomName": "Test-Room",
+      "accessible": true,
+      "image": "https://images.pexels.com/photos/271624/pexels-photo-271624.jpeg",
+      "description": "Missing type",
+      "features": ["WiFi"],
+      "roomPrice": "300"
+    },
+    "expectedStatus": 400
+  },
+  {
+    "scenario": "Empty payload",
+    "payload": {},
+    "expectedStatus": 400
+  },
+  {
+    "scenario": "Invalid room price (negative)",
+    "payload": {
+      "roomName": "Invalid-Price",
+      "type": "Suite",
+      "accessible": true,
+      "image": "https://images.pexels.com/photos/271624/pexels-photo-271624.jpeg",
+      "description": "Negative price",
+      "features": ["WiFi"],
+      "roomPrice": "-100"
+    },
+    "expectedStatus": 400
+  },
+  {
+    "scenario": "Invalid room type (unknown type)",
+    "payload": {
+      "roomName": "Unknown-Type",
+      "type": "InvalidType",
+      "accessible": true,
+      "image": "https://images.pexels.com/photos/271624/pexels-photo-271624.jpeg",
+      "description": "Unknown type",
+      "features": ["WiFi"],
+      "roomPrice": "300"
+    },
+    "expectedStatus": 400
+  },
+  {
+    "scenario": "Missing required image field",
+    "payload": {
+      "roomName": "No-Image",
+      "type": "Suite",
+      "accessible": true,
+      "description": "Missing image",
+      "features": ["WiFi"],
+      "roomPrice": "300"
+    },
+    "expectedStatus": 400
+  },
+  {
+    "scenario": "Invalid features (not an array)",
+    "payload": {
+      "roomName": "Bad-Features",
+      "type": "Suite",
+      "accessible": true,
+      "image": "https://images.pexels.com/photos/271624/pexels-photo-271624.jpeg",
+      "description": "Features not array",
+      "features": "WiFi,TV",
+      "roomPrice": "300"
+    },
+    "expectedStatus": 400
+  }
+]
