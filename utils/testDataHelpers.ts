@@ -89,8 +89,11 @@ export function parameterizeTestData<T extends Record<string, any>>(
     }
     
     const key = variantKeys[index];
-    for (const value of variantValues[index]) {
-      generateCombinations(index + 1, { ...current, [key]: value });
+    const values = variantValues[index];
+    if (!values) return; // Skip if no values for this key
+    
+    for (const value of values) {
+      generateCombinations(index + 1, { ...current, [key as keyof T]: value } as T);
     }
   };
   
@@ -105,7 +108,10 @@ export function parameterizeTestData<T extends Record<string, any>>(
  * const randomRoom = getRandomItem(rooms);
  */
 export function getRandomItem<T>(items: T[]): T {
-  return items[Math.floor(Math.random() * items.length)];
+  if (items.length === 0) {
+    throw new Error('Cannot get random item from empty array');
+  }
+  return items[Math.floor(Math.random() * items.length)]!;
 }
 
 /**

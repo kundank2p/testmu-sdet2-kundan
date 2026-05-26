@@ -58,7 +58,7 @@ export class BasePage {
   async getText(locator: Locator, elementName: string = 'element'): Promise<string> {
     logger.info(`Getting text from ${elementName}`);
     await waitForVisible(locator, elementName);
-    return locator.textContent() || '';
+    return (await locator.textContent()) ?? '';
   }
 
   /**
