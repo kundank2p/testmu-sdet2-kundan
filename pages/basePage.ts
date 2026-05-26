@@ -16,11 +16,25 @@ export class BasePage {
   /**
    * Navigate to a given path or full URL.
    * Waits for the page to be ready before returning.
+   * Handles redirects gracefully (allows browser redirects to complete).
    */
   async navigate(path: string = '/') {
     logger.info(`Navigating to ${path}`);
-    await this.page.goto(path);
-    await this.page.waitForLoadState('networkidle');
+    try {
+      // Use goto with waitUntil 'load' to avoid timeout on redirects
+      await this.page.goto(path, { waitUntil: 'load' });
+    } catch (error: any) {
+      // If navigation is interrupted by redirect, that's expected - just wait for page to be ready
+      if (error.message?.includes('interrupted') || error.message?.includes('Frame load')) {
+        logger.info(`Navigation interrupted by redirect - waiting for page to settle...`);
+        await this.page.waitForLoadState('load');
+        await this.page.waitForLoadState('networkidle');
+      } else {
+        throw error;
+      }
+    }
+    // Extra safety: ensure page is settled after navigation
+    await this.page.waitForLoadState('domcontentloaded');
   }
 
   /**

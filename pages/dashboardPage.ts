@@ -23,12 +23,14 @@ export class DashboardPage extends BasePage {
   /**
    * Open the admin dashboard.
    * Navigates to /admin and waits for the room list to be visible.
+   * Note: Navigation may redirect to /admin/rooms automatically.
    */
   async open() {
     logger.info('Opening admin dashboard');
     await this.navigate('/admin');
-    await this.page.waitForTimeout(1000);
-    await this.page.waitForLoadState('domcontentloaded');
+    // Wait a bit for page to fully render (especially for webkit)
+    await this.page.waitForTimeout(500);
+    await this.page.waitForLoadState('networkidle');
   }
 
   /**

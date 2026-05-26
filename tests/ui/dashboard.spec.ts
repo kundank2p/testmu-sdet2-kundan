@@ -69,7 +69,9 @@ test.describe('Dashboard UI Tests', () => {
 
   test('Dashboard URL is correct', async ({ dashboardPage }) => {
     await dashboardPage.open();
-    expect(dashboardPage.getCurrentUrl()).toContain('/admin');
+    // Page may redirect from /admin to /admin/rooms - both are valid dashboard URLs
+    const url = dashboardPage.getCurrentUrl();
+    expect(url).toMatch(/\/admin(\/rooms)?/);
   });
 
   test('Page title indicates admin dashboard', async ({ dashboardPage, page }) => {

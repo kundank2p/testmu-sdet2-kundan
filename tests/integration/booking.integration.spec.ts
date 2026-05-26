@@ -29,8 +29,16 @@ test.describe('API-to-UI Integration Suite', () => {
 
       // Step 2: Refresh dashboard to load newly created room
       const page = dashboardPage.getPage();
-      await page.reload();
-      await page.waitForLoadState('networkidle');
+      try {
+        await page.reload({ waitUntil: 'networkidle' });
+      } catch (error: any) {
+        // If reload is interrupted by navigation (webkit), just wait for settlement
+        if (error.message?.includes('interrupted')) {
+          await page.waitForLoadState('networkidle');
+        } else {
+          throw error;
+        }
+      }
 
       // Step 3: assert the new room appears in the admin UI
       await expect(
