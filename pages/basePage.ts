@@ -7,6 +7,13 @@ export class BasePage {
   constructor(protected page: Page) {}
 
   /**
+   * Get the underlying page object for direct access when needed.
+   */
+  getPage(): Page {
+    return this.page;
+  }
+
+  /**
    * Navigate to a given path or full URL.
    * Waits for the page to be ready before returning.
    */

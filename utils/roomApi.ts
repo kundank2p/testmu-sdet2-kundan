@@ -37,6 +37,19 @@ export class RoomApi {
     });
   }
 
+  async updateRoom(
+    id: number,
+    payload: object,
+    options: { headers?: Record<string, string> } = {}
+  ): Promise<APIResponse> {
+    logger.info(`Updating room ${id}`);
+    return this.request.put(`/api/room/${id}`, {
+      data: payload,
+      headers: { 'Content-Type': 'application/json', ...options.headers },
+      maxRedirects: 0,
+    });
+  }
+
   async deleteRoom(
     id: number,
     options: { headers?: Record<string, string> } = {}

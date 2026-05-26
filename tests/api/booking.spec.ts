@@ -49,6 +49,165 @@ test.describe('Room API - CRUD Operations', () => {
     }
   });
 
+  // ── UPDATE Operations ──────────────────────────────────────────────────────
+
+  test('UPDATE: Modify room details successfully', async ({ roomApi }) => {
+    // Create a room with a unique name so we can find it
+    const uniqueRoomName = `UpdateTest-${Date.now()}`;
+    const createPayload = {
+      roomName: uniqueRoomName,
+      type: 'Single',
+      accessible: false,
+      image: 'https://images.pexels.com/photos/271624/pexels-photo-271624.jpeg',
+      description: 'Original description',
+      features: ['WiFi'],
+      roomPrice: '100',
+    };
+
+    const createResponse = await roomApi.createRoom(createPayload);
+    assertStatus(createResponse, 200, 'Create room for update test');
+
+    // API doesn't return room ID in create response, so fetch the list and find our room
+    const listResponse = await roomApi.listRooms();
+    const { rooms } = await listResponse.json();
+    const createdRoom = rooms.find((r: any) => r.roomName === uniqueRoomName);
+    expect(createdRoom, `Room "${uniqueRoomName}" not found in list after creation`).toBeTruthy();
+    const roomId = createdRoom.roomid;
+
+    // Update the room details - API returns 202 Accepted for updates
+    const updatePayload = {
+      roomName: `${uniqueRoomName}-Updated`,
+      type: 'Suite',
+      accessible: true,
+      image: 'https://images.pexels.com/photos/271624/pexels-photo-271624.jpeg',
+      description: 'Updated description',
+      features: ['WiFi', 'TV', 'Safe'],
+      roomPrice: '250',
+    };
+
+    const updateResponse = await roomApi.updateRoom(roomId, updatePayload);
+    expect([200, 202], 'UPDATE should succeed').toContain(updateResponse.status());
+
+    // Verify the update was successful by fetching the room
+    const getResponse = await roomApi.getRoom(roomId);
+    const updatedRoom = await getResponse.json();
+    expect(updatedRoom.roomName).toBe(updatePayload.roomName);
+    expect(updatedRoom.type).toBe(updatePayload.type);
+  });
+
+  test('UPDATE: Partial update of room fields', async ({ roomApi }) => {
+    // Create a room with unique name
+    const uniqueRoomName = `PartialUpdate-${Date.now()}`;
+    const createPayload = {
+      roomName: uniqueRoomName,
+      type: 'Double',
+      accessible: false,
+      image: 'https://images.pexels.com/photos/271624/pexels-photo-271624.jpeg',
+      description: 'Original',
+      features: ['WiFi'],
+      roomPrice: '150',
+    };
+
+    const createResponse = await roomApi.createRoom(createPayload);
+    assertStatus(createResponse, 200, 'Create room for partial update');
+
+    // Find the created room in the list
+    const listResponse = await roomApi.listRooms();
+    const { rooms } = await listResponse.json();
+    const createdRoom = rooms.find((r: any) => r.roomName === uniqueRoomName);
+    expect(createdRoom, `Room "${uniqueRoomName}" not found`).toBeTruthy();
+    const roomId = createdRoom.roomid;
+
+    // API requires full room object for update, not just partial fields
+    // Fetch the room to get current state, then merge with updates
+    const currentResponse = await roomApi.getRoom(roomId);
+    const currentRoom = await currentResponse.json();
+
+    const partialPayload = {
+      roomName: currentRoom.roomName,
+      type: currentRoom.type,
+      accessible: currentRoom.accessible,
+      image: currentRoom.image,
+      description: 'Partially updated description',
+      features: currentRoom.features,
+      roomPrice: '200',
+    };
+
+    const updateResponse = await roomApi.updateRoom(roomId, partialPayload);
+    expect([200, 202], 'UPDATE should succeed').toContain(updateResponse.status());
+
+    // Verify the update
+    const getResponse = await roomApi.getRoom(roomId);
+    const updatedRoom = await getResponse.json();
+    expect(updatedRoom.description).toBe(partialPayload.description);
+    expect(String(updatedRoom.roomPrice)).toBe(String(partialPayload.roomPrice));
+  });
+
+  // ── DELETE Operations ──────────────────────────────────────────────────────
+
+  test('DELETE: Remove room successfully', async ({ roomApi }) => {
+    // Create a room with unique name
+    const uniqueRoomName = `DeleteTest-${Date.now()}`;
+    const createPayload = {
+      roomName: uniqueRoomName,
+      type: 'Suite',
+      accessible: true,
+      image: 'https://images.pexels.com/photos/271624/pexels-photo-271624.jpeg',
+      description: 'Room to be deleted',
+      features: ['WiFi'],
+      roomPrice: '300',
+    };
+
+    const createResponse = await roomApi.createRoom(createPayload);
+    assertStatus(createResponse, 200, 'Create room for deletion');
+
+    // Find room in list to get its ID
+    const listResponse = await roomApi.listRooms();
+    const { rooms } = await listResponse.json();
+    const createdRoom = rooms.find((r: any) => r.roomName === uniqueRoomName);
+    expect(createdRoom, `Room "${uniqueRoomName}" not found`).toBeTruthy();
+    const roomId = createdRoom.roomid;
+
+    // Delete the room - API returns 202 Accepted
+    const deleteResponse = await roomApi.deleteRoom(roomId);
+    expect([200, 202], 'DELETE should succeed').toContain(deleteResponse.status());
+
+    // Verify room is deleted
+    const getResponse = await roomApi.getRoom(roomId);
+    expect(getResponse.status()).toBeGreaterThanOrEqual(400);
+  });
+
+  test('DELETE: Attempt to delete already deleted room', async ({ roomApi }) => {
+    // Create and delete a room
+    const uniqueRoomName = `DoubleDel-${Date.now()}`;
+    const createPayload = {
+      roomName: uniqueRoomName,
+      type: 'Single',
+      accessible: false,
+      image: 'https://images.pexels.com/photos/271624/pexels-photo-271624.jpeg',
+      description: 'For double delete test',
+      features: ['WiFi'],
+      roomPrice: '100',
+    };
+
+    const createResponse = await roomApi.createRoom(createPayload);
+    assertStatus(createResponse, 200, 'Create room for double delete test');
+
+    // Find room in list
+    const listResponse = await roomApi.listRooms();
+    const { rooms } = await listResponse.json();
+    const createdRoom = rooms.find((r: any) => r.roomName === uniqueRoomName);
+    expect(createdRoom, `Room "${uniqueRoomName}" not found`).toBeTruthy();
+    const roomId = createdRoom.roomid;
+
+    // Delete once
+    await roomApi.deleteRoom(roomId);
+
+    // Try to delete again - should fail
+    const secondDeleteResponse = await roomApi.deleteRoom(roomId);
+    expect(secondDeleteResponse.status()).toBeGreaterThanOrEqual(400);
+  });
+
   // ── READ Operations ───────────────────────────────────────────────────────
 
   test('READ: Get room list returns valid schema', async ({ roomApi }) => {

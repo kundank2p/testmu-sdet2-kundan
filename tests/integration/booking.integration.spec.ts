@@ -1,6 +1,5 @@
 import { expect } from '@playwright/test';
 import { test } from '../../fixtures/integration.fixture.js';
-import { DashboardPage } from '../../pages/dashboardPage.js';
 
 const uniqueRoomName = `Suite-${Date.now()}`;
 const targetPrice = 250;
@@ -28,7 +27,12 @@ test.describe('API-to-UI Integration Suite', () => {
       const createBody = await createResponse.json();
       expect(createBody.success).toBe(true);
 
-      // Step 2: dashboard fixture already has valid session and is open
+      // Step 2: Refresh dashboard to load newly created room
+      const page = dashboardPage.getPage();
+      await page.reload();
+      await page.waitForLoadState('networkidle');
+
+      // Step 3: assert the new room appears in the admin UI
       await expect(
         dashboardPage.getRoomEntry(uniqueRoomName),
         `Room "${uniqueRoomName}" not found in admin UI after API creation`
